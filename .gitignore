@@ -9,3 +9,6 @@ __pycahe__
 *.coverage
 .DS_Store
 env.sh
+
+/.idea/
+/.venv/
