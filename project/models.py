@@ -36,3 +36,20 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User {0}>'.format(self.email)
+
+
+
+class Task(db.Model):
+
+    __tablename__ = "tasks"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    task = db.Column(db.String(255), unique=True, nullable=False)
+    done = db.Column(db.Boolean, nullable=False, default=False)
+
+    def __init__(self, task, done=False):
+        self.task = task
+        self.done = done
+
+    def __repr__(self):
+        return '<Task "{0}">'.format(self.task)

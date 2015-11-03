@@ -1,6 +1,3 @@
-# tests/test_main.py
-
-
 import unittest
 
 from base import BaseTestCase

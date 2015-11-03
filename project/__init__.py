@@ -1,10 +1,3 @@
-# project/__init__.py
-
-
-#################
-#### imports ####
-#################
-
 import os
 
 from flask import Flask, render_template
@@ -15,18 +8,11 @@ from flask_bootstrap import Bootstrap
 from flask.ext.sqlalchemy import SQLAlchemy
 
 
-################
-#### config ####
-################
-
+# config
 app = Flask(__name__)
-app.config.from_object(os.environ['APP_SETTINGS'])
+#app.config.from_object(os.environ['APP_SETTINGS'])
 
-
-####################
-#### extensions ####
-####################
-
+# extensions
 login_manager = LoginManager()
 login_manager.init_app(app)
 bcrypt = Bcrypt(app)
@@ -34,21 +20,14 @@ toolbar = DebugToolbarExtension(app)
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
 
-
-###################
-### blueprints ####
-###################
-
+# blueprints
 from project.user.views import user_blueprint
 from project.main.views import main_blueprint
 app.register_blueprint(user_blueprint)
 app.register_blueprint(main_blueprint)
 
 
-###################
-### flask-login ####
-###################
-
+# flask-login
 from project.models import User
 
 login_manager.login_view = "user.login"
@@ -60,9 +39,16 @@ def load_user(user_id):
     return User.query.filter(User.id == int(user_id)).first()
 
 
-########################
-#### error handlers ####
-########################
+# flask-restless
+# Create the Flask-Restless API manager.
+import flask.ext.restless
+from project.models import Task
+restless_manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
+restless_manager.create_api(User, methods=['GET'], url_prefix='', collection_name='user')
+restless_manager.create_api(Task, methods=['GET', 'POST', 'DELETE'], url_prefix='', collection_name='task')
+
+
+# error handlers
 
 @app.errorhandler(403)
 def forbidden_page(error):

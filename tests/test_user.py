@@ -1,6 +1,3 @@
-# tests/test_user.py
-
-
 import datetime
 import unittest
 
