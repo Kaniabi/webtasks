@@ -36,15 +36,15 @@ class TestUserBlueprint(BaseTestCase):
             )
             response = self.client.get('/logout', follow_redirects=True)
             self.assertIn(b'You were logged out. Bye!', response.data)
-            self.assertFalse(current_user.is_active())
+            self.assertFalse(current_user.is_active)
 
     def test_logout_route_requires_login(self):
-        # Ensure logout route requres logged in user.
+        # Ensure logout route requires logged in user.
         response = self.client.get('/logout', follow_redirects=True)
         self.assertIn(b'Please log in to access this page', response.data)
 
     def test_member_route_requires_login(self):
-        # Ensure member route requres logged in user.
+        # Ensure member route requires logged in user.
         response = self.client.get('/members', follow_redirects=True)
         self.assertIn(b'Please log in to access this page', response.data)
 

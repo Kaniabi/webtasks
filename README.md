@@ -41,11 +41,13 @@ $ python manage.py runserver
 Without coverage:
 
 ```sh
+$ export APP_SETTINGS="project.config.TestingConfig"
 $ python manage.py test
 ```
 
 With coverage:
 
 ```sh
+$ export APP_SETTINGS="project.config.TestingConfig"
 $ python manage.py cov
 ```

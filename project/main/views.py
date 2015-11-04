@@ -1,24 +1,12 @@
-# project/main/views.py
-
-
-#################
-#### imports ####
-#################
-
 from flask import render_template, Blueprint
 
 
-################
-#### config ####
-################
+# config
 
 main_blueprint = Blueprint('main', __name__,)
 
 
-################
-#### routes ####
-################
-
+# routes
 
 @main_blueprint.route('/')
 def home():

@@ -1,6 +1,3 @@
-# tests/test_config.py
-
-
 import unittest
 
 from flask import current_app
@@ -32,7 +29,7 @@ class TestTestingConfig(TestCase):
     def test_app_is_testing(self):
         self.assertTrue(current_app.config['TESTING'])
         self.assertTrue(app.config['DEBUG'] is True)
-        self.assertTrue(app.config['BCRYPT_LOG_ROUNDS'] == 1)
+        self.assertTrue(app.config['BCRYPT_LOG_ROUNDS'] == 4)
         self.assertTrue(app.config['WTF_CSRF_ENABLED'] is False)
 
 

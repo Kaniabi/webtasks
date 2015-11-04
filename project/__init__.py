@@ -10,7 +10,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 # config
 app = Flask(__name__)
-#app.config.from_object(os.environ['APP_SETTINGS'])
+app.config.from_object(os.environ.get('APP_SETTINGS', 'project.config.TestingConfig'))
 
 # extensions
 login_manager = LoginManager()
@@ -40,12 +40,11 @@ def load_user(user_id):
 
 
 # flask-restless
-# Create the Flask-Restless API manager.
 import flask.ext.restless
 from project.models import Task
 restless_manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
-restless_manager.create_api(User, methods=['GET'], url_prefix='', collection_name='user')
-restless_manager.create_api(Task, methods=['GET', 'POST', 'DELETE'], url_prefix='', collection_name='task')
+restless_manager.create_api(User, methods=('GET',), url_prefix='', collection_name='user')
+restless_manager.create_api(Task, methods=('GET', 'POST', 'DELETE'), url_prefix='', collection_name='task')
 
 
 # error handlers
