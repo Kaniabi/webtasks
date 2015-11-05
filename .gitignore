@@ -12,3 +12,4 @@ env.sh
 
 /.idea/
 /.venv/
+/.vagrant/

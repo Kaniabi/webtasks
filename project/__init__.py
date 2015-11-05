@@ -44,7 +44,13 @@ import flask.ext.restless
 from project.models import Task
 restless_manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
 restless_manager.create_api(User, methods=('GET',), url_prefix='', collection_name='user')
-restless_manager.create_api(Task, methods=('GET', 'POST', 'DELETE'), url_prefix='', collection_name='task')
+restless_manager.create_api(
+    Task,
+    methods=('GET', 'POST', 'DELETE'),
+    url_prefix='',
+    collection_name='task',
+    allow_delete_many=True
+)
 
 
 # error handlers

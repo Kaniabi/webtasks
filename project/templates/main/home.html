@@ -4,7 +4,31 @@
 
 <div class="body-content">
   <div class="row">
-    <h1>Welcome!</h1>
+    <div ng-controller="WebTasksController">
+      {% raw %}
+
+      <header>
+        <form class="form-inline" id="tasks-form" ng-submit="add_task()">
+          <input id="tasks-new" class="form-control" placeholder="What needs to be done?" ng-model="new_task" autofocus>
+        </form>
+      </header>
+      <section>
+        <ul id="task-list" class="list-group">
+          <li ng-repeat="i_task in tasks" class="list-group-item">
+            <div class="view">
+                <input class="toggle" type="checkbox" ng-model="i_task.done" ng-change="toggle_task(i_task.id)">
+                <label ng-dblclick="edit_task(i_task.id)">{{ i_task.task }}</label>
+                <button class="destroy glyphicon glyphicon-trash" ng-click="delete_task(i_task.id)"></button>
+            </div>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <button type="button" class="btn btn-danger" ng-click="delete_all()">Delete all</button>
+      </section>
+
+      {% endraw %}
+    </div>
   </div>
 </div>
 
