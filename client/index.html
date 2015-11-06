@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html ng-app="webtasks">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Web Tasks</title>
+
+    <!-- meta -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- styles -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/static/main.css" rel="stylesheet" media="screen">
+  </head>
+
+  <body>
+    <div class="jumbotron">
+      <h1>WebTasks</h1>
+      <p>A simple task application for a job application.</p>
+    </div>
+
+    <div class="site-content">
+      <div class="container">
+
+        <div class="body-content">
+          <div class="row">
+            <div ng-controller="WebTasksController">
+              <header>
+                <form class="form" id="tasks-form" ng-submit="add_task()">
+                  <input id="tasks-new" class="form-control" placeholder="What needs to be done?" ng-model="new_task" autofocus>
+                </form>
+              </header>
+              <section>
+                <ul id="task-list" class="list-group">
+                  <li ng-repeat="i_task in tasks" class="list-group-item">
+                    <div class="view">
+                        <input class="toggle" type="checkbox" ng-model="i_task.done" ng-change="toggle_task(i_task)">
+                        <label>{{ i_task.task }}</label>
+                        <button class="destroy glyphicon glyphicon-trash" ng-click="delete_task(i_task)"></button>
+                    </div>
+                  </li>
+                </ul>
+              </section>
+              <section>
+                <button type="button" class="btn btn-danger" ng-click="delete_all()">Delete all</button>
+              </section>
+            </div>
+          </div>
+        </div>
+        <br>
+      </div>
+    </div>
+
+    <br><br>
+
+    <footer>
+      <div class="container">
+        <small>
+          <span>© <a href="mailto:kaniabi@gmail.com">Alexandre Andrade</a></span>
+        </small>
+      </div>
+    </footer>
+
+    <!-- scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-resource.js"></script>
+    <script src="/static//main.js" type="text/javascript"></script>
+
+  </body>
+</html>

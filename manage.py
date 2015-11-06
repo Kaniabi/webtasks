@@ -3,30 +3,24 @@ import unittest
 import coverage
 
 from flask.ext.script import Manager
-from flask.ext.migrate import Migrate, MigrateCommand
 
 COV = coverage.coverage(
-        branch=True,
-        include='project/*',
-        omit=['*/__init__.py', '*/config/*']
-    )
+    branch=True,
+    include='server/*',
+    omit=['*/__init__.py', '*/config/*']
+)
 COV.start()
 
-from project import app, db
-from project.models import User
+from server.rest_server import DevelopmentConfig, create_application
+app, db = create_application(DevelopmentConfig)
 
-
-migrate = Migrate(app, db)
 manager = Manager(app)
-
-# migrations
-manager.add_command('db', MigrateCommand)
 
 
 @manager.command
 def test():
     """Runs the unit tests without coverage."""
-    tests = unittest.TestLoader().discover('tests')
+    tests = unittest.TestLoader().discover('server')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
         return 0
@@ -37,7 +31,7 @@ def test():
 @manager.command
 def cov():
     """Runs the unit tests with coverage."""
-    tests = unittest.TestLoader().discover('tests')
+    tests = unittest.TestLoader().discover('server')
     unittest.TextTestRunner(verbosity=2).run(tests)
     COV.stop()
     COV.save()
