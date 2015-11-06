@@ -1,51 +1,73 @@
 # WebTasks
 
-## Quick Start
 
-### Download sources
+
+## Configuring
+
+### Configure the environment.
+
+This configuration is based on an empty Ubuntu vagrant box, more speficially, the box "phusion/ubuntu-14.04-amd64".
 
 ```sh
-apt-get install git python-virtualenv
+$ apt-get install git python3-pip npm nodejs
+$ ln -s /usr/bin/nodejs /usr/bin/node
+$ pip3 virtualenv
+$ npm install -g http-server
 ```
+
+### Download the sources
 
 ```sh
 $ git clone https://github.com/Kaniabi/webtasks.git
+```
 
+### Create the server environment using virtualenv
+
+The environment must be created only once.
+
+```sh
 $ cd webstasks
 $ virtualenv .venv
 $ source .venv/bin/activate
 $ pip install -r requirements.txt
-
-```
-
-### Set Environment Variables
-
-### Create DB
-
-```sh
 $ python manage.py create_db
-$ python manage.py db init
-$ python manage.py db migrate
-$ python manage.py create_admin
-$ python manage.py create_data
+$ deactivate
 ```
 
-### Run the Application
+
+## Executing
+
+### Start the server
+
+The server will be available at http://localhost:5000.
 
 ```sh
+$ cd webstasks
+$ source .venv/bin/activate
 $ python manage.py runserver
 ```
 
-### Testing
 
-Without coverage:
+### Start the client
+
+The client will be available at http://localhost:8080
+
+```sh
+$ cd client
+$ http-server
+```
+
+
+## Testing
+
+### Without coverage:
 
 ```sh
 $ export APP_SETTINGS="project.config.TestingConfig"
 $ python manage.py test
 ```
 
-With coverage:
+### With coverage:
 
 ```sh
 $ export APP_SETTINGS="project.config.TestingConfig"

@@ -1,7 +1,9 @@
 # encoding: UTF-8
 import unittest
+
 from flask.ext.testing import TestCase
 
+import os
 
 
 class TestTaskBlueprint(TestCase):
@@ -11,7 +13,15 @@ class TestTaskBlueprint(TestCase):
 
     def create_app(self):
         from server.rest_server import TestingConfig, create_application
-        self.__app, self.__db = create_application(TestingConfig)
+        import logging.handlers
+
+        self.__app, self.__db = create_application(TestingConfig, log_filename=None)
+
+        # Replaces all current logger handlers by our test (in memory) handler
+        self.__log_handler = logging.handlers.BufferingHandler(100)
+        del self.__app.logger.handlers[:]
+        self.__app.logger.addHandler(self.__log_handler)
+
         return self.__app
 
 
@@ -44,6 +54,8 @@ class TestTaskBlueprint(TestCase):
     def test_task_post(self):
 
         with self.client:
+            self.assertLogs([])
+
             response = self.client.post(
                 '/task',
                 data='{"task": "Tomar um café", "done": false}',
@@ -60,7 +72,6 @@ class TestTaskBlueprint(TestCase):
                     "done": False,
                 }
             )
-
             response = self.client.get(
                 '/task',
             )
@@ -71,12 +82,47 @@ class TestTaskBlueprint(TestCase):
                     "num_results": 1,
                     "objects": [
                         {
-                            "id" : 1,
-                            "task" : "Tomar um café",
-                            "done" : False,
+                            "id": 1,
+                            "task": "Tomar um café",
+                            "done": False,
                         }
                     ],
                     "page": 1,
                     "total_pages": 1,
                 }
             )
+            self.assertLogs([
+                "Adding \"Tomar um café\"",
+            ])
+
+
+            response = self.client.patch(
+                '/task/1',
+                data='{"id" : 1, "done": true}',
+                headers={
+                    "Content-Type": "application/json"
+                },
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.json,
+                {
+                    "task": "Tomar um café",
+                    "id": 1,
+                    "done": True,
+                }
+            )
+            self.assertLogs([
+                "Adding \"Tomar um café\"",
+                "Editing 1",
+            ])
+
+
+    def assertLogs(self, expected_logs):
+        obtained_logs = [i.getMessage() for i in self.__log_handler.buffer]
+        self.assertEqual(obtained_logs, expected_logs)
+
+
+
+if __name__ == '__main__':
+    unittest.main()

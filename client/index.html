@@ -44,7 +44,7 @@
                 </ul>
               </section>
               <section>
-                <button type="button" class="btn btn-danger" ng-click="delete_all()">Delete all</button>
+                <button type="button" class="btn btn-danger" ng-click="delete_all()" ng-disabled="tasks.length === 0">Delete all</button>
               </section>
             </div>
           </div>

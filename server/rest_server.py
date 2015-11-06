@@ -44,8 +44,7 @@ class ProductionConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/webtasks'
 
 
-
-def create_application(config):
+def create_application(config, log_filename='rest_server.log'):
     '''
     Creates the flask application and database.
 
@@ -54,6 +53,10 @@ def create_application(config):
     :param BaseConfig config:
         One configuration object.
 
+    :param str log_filename:
+        The file to generate log messages.
+        If None do not generate log file.
+
     :return tuple(Flask, SqlAlchemy):
         Returns the flask application and sql-alchemy database.
     '''
@@ -61,9 +64,20 @@ def create_application(config):
     from flask.ext.sqlalchemy import SQLAlchemy
     from flask.ext.cors import CORS
     import flask.ext.restless
+    from logging.handlers import RotatingFileHandler
+    import logging
 
     app = Flask(__name__)
+
+    # Logging
+    if log_filename is not None:
+        handler = RotatingFileHandler(log_filename, maxBytes=10000, backupCount=1)
+        handler.setLevel(logging.INFO)
+        app.logger.addHandler(handler)
+
+    # Enable different origin to access the REST API.
     cors = CORS(app)
+
     app.config.from_object(config)
 
     db = SQLAlchemy(app)
@@ -83,16 +97,48 @@ def create_application(config):
             self.task = task
             self.done = done
 
+
+    class RestLogger(object):
+        """
+        Generates log messages by handling pre/post processors for restless api.
+        """
+
+        def __init__(self, logger, message, getter=lambda x: x):
+            self.__logger = logger
+            self.__message = message
+            self.__getter = getter
+
+        def __call__(self, **kwargs):
+            try:
+                values = self.__getter(kwargs)
+                message = self.__message.format(**values)
+            except Exception:
+                message = "Error formating log message with:\n  * message: {}\n  * keys: {}".format(
+                    self.__message,
+                    [i for i in values.keys()]
+                )
+            self.__logger.info(message)
+
+
     # RESTless automatically creates the REST API based in a Model. Changes the defaults valus to match the required
     # API.
     restless_manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
-    restless_manager.create_api(
+    blueprint = restless_manager.create_api_blueprint(
         Task,
         methods=('GET', 'POST', 'DELETE', 'PATCH'),
         url_prefix='',
         collection_name='task',
-        allow_delete_many=True
+        allow_delete_many=True,
+        preprocessors={
+           'DELETE_SINGLE': [RestLogger(app.logger, "Deleting {instance_id}")],
+           'DELETE_MANY': [RestLogger(app.logger, "Deleting all!")],
+        },
+        postprocessors={
+           'POST': [RestLogger(app.logger, "Adding \"{task}\"", getter=lambda x: x['result'])],
+           'PATCH_SINGLE': [RestLogger(app.logger, "Editing {id}", getter=lambda x: x['result'])],
+        }
     )
+    app.register_blueprint(blueprint)
 
     return app, db
 

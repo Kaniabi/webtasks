@@ -23,7 +23,7 @@ app.controller('WebTasksController', function($scope, Task) {
     $scope.add_task = function() {
         var task = new Task();
         task.task = $scope.new_task.trim();
-        task.done = true;
+        task.done = false;
         task.$save(
             function(_ignore) {
                 // Updates the list of objects. There must be a better way.
