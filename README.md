@@ -42,7 +42,7 @@ $ deactivate
 The server will be available at http://localhost:5000.
 
 ```sh
-$ cd webstasks
+$ cd webtasks
 $ source .venv/bin/activate
 $ python manage.py runserver
 ```
@@ -53,6 +53,7 @@ $ python manage.py runserver
 The client will be available at http://localhost:8080
 
 ```sh
+$ cd webtasks
 $ cd client
 $ http-server
 ```
